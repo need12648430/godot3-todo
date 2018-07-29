@@ -34,6 +34,7 @@ var current_screen = null
 var current_script = null
 var current_search = null
 var displaying = null
+var omit_directories = null
 
 var todo_regex
 var cache
@@ -70,6 +71,8 @@ func setup_dock(dock):
 		for type in TYPES:
 			displaying.append(type)
 	
+	omit_directories = config.get_value("display", "omit_directories", ["res://addons"])
+	
 	more = dock.get_node("Toolbars/Toolbar/More")
 	more.icon = get_icon("arrow", "OptionButton")
 	menu = more.get_popup()
@@ -84,6 +87,14 @@ func setup_dock(dock):
 	
 	config.set_value("display", "types", displaying)
 	
+	menu.add_separator()
+	current = menu.get_item_count()
+	menu.add_check_item("Skip res://addons/")
+	menu.set_item_metadata(current, "skip_addons")
+	menu.set_item_checked(current, "res://addons" in omit_directories)
+	current = menu.get_item_count()
+	menu.add_item("Clear cache")
+	menu.set_item_metadata(current, "clear_cache")
 	menu.add_separator()
 	current = menu.get_item_count()
 	menu.add_item("About")
@@ -146,6 +157,10 @@ func scan_file_tree(root, exts = ["gd", "cs", "tscn"]):
 	var changes = 0
 	
 	for section in cache.get_sections():
+		for omission in omit_directories:
+			if omission in section:
+				cache.erase_section(section)
+				changes += 1
 		if not "::" in section and not File.new().file_exists(section):
 			cache.erase_section(section)
 			changes += 1
@@ -163,7 +178,8 @@ func scan_file_tree(root, exts = ["gd", "cs", "tscn"]):
 		location += file if location == "res://" else "/" + file
 		
 		if dir.current_is_dir():
-			changes += scan_file_tree(location, exts)
+			if not location in omit_directories:
+				changes += scan_file_tree(location, exts)
 		elif file.get_extension().to_lower() in exts:
 			if scan_file(location, file.get_extension().to_lower()):
 				changes += 1
@@ -252,6 +268,21 @@ func menu_clicked(item):
 		menu.set_item_checked(item, enabled)
 		update_display()
 		config.set_value("display", "types", displaying)
+	elif meta == "skip_addons":
+		var skip_addons = ! menu.is_item_checked(item)
+		if skip_addons:
+			if not "res://addons" in omit_directories:
+				omit_directories.append("res://addons")
+		else:
+			if "res://addons" in omit_directories:
+				omit_directories.erase("res://addons")
+		menu.set_item_checked(item, skip_addons)
+		soft_refresh_todos()
+		update_display()
+		config.set_value("display", "omit_directories", omit_directories)
+	elif meta == "clear_cache":
+		soft_refresh_todos()
+		update_display()
 	elif meta == "about":
 		about.popup_centered()
 
