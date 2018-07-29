@@ -1,4 +1,4 @@
-![TODO logo](addons/icon.png)
+![TODO logo](addons/todo/icon.png)
 
 # godot3-todo
 This is a TODO list dock for the Godot 3 game engine. It is the successor of [the 2.1 version](https://github.com/need12648430/godot-todo).
