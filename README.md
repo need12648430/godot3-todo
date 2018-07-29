@@ -13,3 +13,5 @@ This is a TODO list dock for the Godot 3 game engine. It is the successor of [th
 
 
 ![Preview of TODO](preview/todo.gif)
+
+[![Shamelessly begging for tips](https://az743702.vo.msecnd.net/cdn/kofi1.png?v=0)](https://ko-fi.com/A0A4H42F)
