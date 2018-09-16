@@ -12,13 +12,12 @@ func _init(dock_scene):
 func _enter_tree():
 	if version["major"] == 3 and version["minor"] == 1:
 		add_tool_menu_item(get_plugin_name(), self, "toggle_dock")
-	else:
-		attach_dock()
+	attach_dock()
 
 func _exit_tree():
-	detach_dock()
 	if version["major"] == 3 and version["minor"] == 1:
 		remove_tool_menu_item(get_plugin_name())
+	detach_dock()
 
 # restores dock to its previous slot, if necessary
 # (dock is saved automatically (by name) into godot's layout config)
