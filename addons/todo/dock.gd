@@ -4,16 +4,21 @@ extends EditorPlugin
 var dock_scene = null
 var instance = null
 var attached = false
+var version = Engine.get_version_info()
 
 func _init(dock_scene):
 	self.dock_scene = dock_scene
 
 func _enter_tree():
-	add_tool_menu_item(get_plugin_name(), self, "toggle_dock")
+	if version["major"] == 3 and version["minor"] == 1:
+		add_tool_menu_item(get_plugin_name(), self, "toggle_dock")
+	else:
+		attach_dock()
 
 func _exit_tree():
 	detach_dock()
-	remove_tool_menu_item(get_plugin_name())
+	if version["major"] == 3 and version["minor"] == 1:
+		remove_tool_menu_item(get_plugin_name())
 
 # restores dock to its previous slot, if necessary
 # (dock is saved automatically (by name) into godot's layout config)
