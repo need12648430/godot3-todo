@@ -111,7 +111,7 @@ func setup_dock(dock):
 	get_editor_interface().get_script_editor().connect("editor_script_changed", self, "script_changed")
 	
 	todo_regex = RegEx.new()
-	todo_regex.compile("(?:#|//)\\s*(" + PoolStringArray(TYPES.keys()).join("|") + ")\\s*\\:\\s*([^\\n]+)")
+	todo_regex.compile("(?:#|//)\\s*(" + PoolStringArray(TYPES.keys()).join("|") + ")\\s*(\\:)?\\s*([^\\n]+)")
 	cache = load_config("todo.cache.ini")
 	current_script = get_editor_interface().get_script_editor().get_current_script()
 	
@@ -216,7 +216,7 @@ func scan_file(target, ext):
 			
 			for m in matches:
 				var type = m.get_string(1)
-				var content = m.get_string(2)
+				var content = m.get_string(3)
 				var line = len(source.substr(0, m.get_start()).split('\n')) - 1
 				
 				todos.append([type, content, line])
