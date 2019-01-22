@@ -63,7 +63,7 @@ func setup_dock(dock):
 	# NOTE: undocumented? L802 of /editor/scene_tree_dock.cpp
 	search.add_icon_override("right_icon", get_icon("Search", "EditorIcons"))
 	
-	config = load_config("config.ini")
+	config = load_config("todo.config.ini")
 	if config.has_section_key("display", "types"):
 		displaying = config.get_value("display", "types")
 	else:
@@ -112,14 +112,14 @@ func setup_dock(dock):
 	
 	todo_regex = RegEx.new()
 	todo_regex.compile("(?:#|//)\\s*(" + PoolStringArray(TYPES.keys()).join("|") + ")\\s*\\:\\s*([^\\n]+)")
-	cache = load_config("cache.ini")
+	cache = load_config("todo.cache.ini")
 	current_script = get_editor_interface().get_script_editor().get_current_script()
 	
 	scan_file_tree("res://")
 	display_todos(null)
 
 func cleanup_dock(dock):
-	save_config("config.ini", config)
+	save_config("todo.config.ini", config)
 	get_editor_interface().get_resource_filesystem().disconnect("filesystem_changed", self, "soft_refresh_todos")
 	menu.disconnect("id_pressed", self, "menu_clicked")
 	dock.get_node("Toolbars/Toolbar/Search").disconnect("text_changed", self, "filter_set")
@@ -129,7 +129,7 @@ func cleanup_dock(dock):
 	disconnect("main_screen_changed", self, "screen_changed")
 	get_editor_interface().get_script_editor().disconnect("editor_script_changed", self, "script_changed")
 	
-	save_config("cache.ini", cache)
+	save_config("todo.cache.ini", cache)
 
 func soft_refresh_todos():
 	var changes = scan_file_tree("res://")

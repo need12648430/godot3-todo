@@ -79,7 +79,7 @@ func cleanup_dock(dock):
 
 # create (if necessary) and load an INI configuration by (relative) filename
 func load_config(relative_path):
-	var location = "%s/%s" % [get_addon_dir(), relative_path]
+	var location = "%s" % [relative_path]
 	
 	if not File.new().file_exists(location):
 		var create = File.new()
@@ -92,7 +92,7 @@ func load_config(relative_path):
 
 # save a configuration to a (relative) filename
 func save_config(relative_path, config):
-	var location = "%s/%s" % [get_addon_dir(), relative_path]
+	var location = "%s" % [relative_path]
 	config.save(location)
 
 func get_addon_dir():
